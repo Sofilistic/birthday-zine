@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SKILO — ISSUE 22</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Permanent+Marker&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    /* =========================
+       RESET
+    ========================= */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: #111;
+      color: #111;
+      font-family: "Space Grotesk", sans-serif;
+      overflow: hidden;
+    }
+
+
+    /* =========================
+       ZINE CONTAINER
+    ========================= */
+
+    .zine {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: #f4ead8;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      padding: clamp(20px, 5vw, 60px);
+
+      display: none;
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          rgba(255,255,255,.08),
+          rgba(255,255,255,.08)
+        ),
+        #f4ead8;
+    }
+
+    .page.active {
+      display: block;
+      animation: pageIn .45s ease;
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateX(35px) rotate(.5deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0) rotate(0);
+      }
+    }
+
+
+    /* =========================
+       PAPER TEXTURE
+    ========================= */
+
+    .page::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+
+      pointer-events: none;
+
+      opacity: .16;
+
+      background-image:
+        radial-gradient(#111 0.5px, transparent .5px);
+
+      background-size: 5px 5px;
+
+      mix-blend-mode: multiply;
+    }
+
+
+    /* =========================
+       PAGE NUMBER
+    ========================= */
+
+    .page-number {
+      position: absolute;
+      bottom: 18px;
+      right: 25px;
+
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+
+      z-index: 10;
+    }
+
+
+    /* =========================
+       COVER
+    ========================= */
+
+    .cover {
+      background: #e9332d;
+      color: #111;
+    }
+
+    .cover-title {
+      position: absolute;
+
+      left: 6vw;
+      top: 8vh;
+
+      font-family: "Bebas Neue", sans-serif;
+
+      font-size: clamp(90px, 20vw, 260px);
+
+      line-height: .75;
+
+      letter-spacing: -4px;
+
+      transform: rotate(-3deg);
+
+      z-index: 4;
+    }
+
+    .cover-title span {
+      display: block;
+    }
+
+    .cover-title .second {
+      margin-left: 12vw;
+    }
+
+    .issue {
+      position: absolute;
+
+      right: 7vw;
+      top: 8vh;
+
+      font-family: "DM Mono", monospace;
+
+      font-size: 14px;
+
+      border: 2px solid #111;
+      padding: 7px 10px;
+
+      transform: rotate(5deg);
+    }
+
+    .cover-photo {
+      position: absolute;
+
+      width: min(55vw, 500px);
+      height: min(68vh, 620px);
+
+      right: 8vw;
+      bottom: 5vh;
+
+      object-fit: cover;
+
+      border: 5px solid #111;
+
+      transform: rotate(5deg);
+
+      filter: saturate(1.2) contrast(1.05);
+
+      z-index: 2;
+    }
+
+    .cover-note {
+      position: absolute;
+
+      left: 7vw;
+      bottom: 13vh;
+
+      font-family: "Permanent Marker";
+
+      font-size: clamp(18px, 3vw, 35px);
+
+      transform: rotate(-7deg);
+
+      z-index: 5;
+    }
+
+    .start-button {
+      position: absolute;
+
+      left: 7vw;
+      bottom: 5vh;
+
+      padding: 12px 18px;
+
+      border: 2px solid #111;
+
+      background: #f6d547;
+
+      font-family: "DM Mono", monospace;
+
+      cursor: pointer;
+
+      box-shadow: 5px 5px 0 #111;
+
+      z-index: 20;
+    }
+
+    .start-button:hover {
+      transform: translate(3px,3px);
+      box-shadow: 2px 2px 0 #111;
+    }
+
+
+    /* =========================
+       COLLAGE PAGE
+    ========================= */
+
+    .collage-title {
+      font-family: "Bebas Neue";
+      font-size: clamp(60px, 12vw, 150px);
+
+      line-height: .8;
+
+      transform: rotate(-2deg);
+    }
+
+    .photo {
+      position: absolute;
+
+      object-fit: cover;
+
+      border: 5px solid #111;
+
+      box-shadow: 7px 7px 0 #111;
+
+      filter: contrast(1.05) saturate(1.1);
+    }
+
+    .photo.one {
+      width: 28vw;
+      height: 42vh;
+
+      top: 20vh;
+      left: 7vw;
+
+      transform: rotate(-5deg);
+    }
+
+    .photo.two {
+      width: 23vw;
+      height: 30vh;
+
+      top: 15vh;
+      right: 18vw;
+
+      transform: rotate(6deg);
+    }
+
+    .photo.three {
+      width: 25vw;
+      height: 32vh;
+
+      bottom: 10vh;
+      right: 8vw;
+
+      transform: rotate(-4deg);
+    }
+
+    .scribble {
+      position: absolute;
+
+      font-family: "Permanent Marker";
+
+      font-size: clamp(18px, 3vw, 35px);
+    }
+
+    .scribble.a {
+      left: 40vw;
+      top: 40vh;
+
+      transform: rotate(-8deg);
+    }
+
+    .scribble.b {
+      right: 5vw;
+      top: 8vh;
+
+      transform: rotate(8deg);
+    }
+
+
+    /* =========================
+       REPORT
+    ========================= */
+
+    .report {
+      background: #f6d547;
+    }
+
+    .breaking {
+      font-family: "DM Mono", monospace;
+
+      font-size: 13px;
+
+      border-top: 3px solid #111;
+      border-bottom: 3px solid #111;
+
+      padding: 10px 0;
+
+      margin-bottom: 20px;
+    }
+
+    .report h1 {
+      font-family: "Bebas Neue";
+
+      font-size: clamp(70px, 13vw, 170px);
+
+      line-height: .75;
+
+      max-width: 900px;
+
+      transform: rotate(-2deg);
+    }
+
+    .report-text {
+      max-width: 600px;
+
+      margin-top: 35px;
+
+      font-size: clamp(15px, 2vw, 22px);
+
+      line-height: 1.4;
+    }
+
+    .stats {
+      position: absolute;
+
+      right: 7vw;
+      bottom: 10vh;
+
+      font-family: "DM Mono";
+
+      font-size: 14px;
+
+      transform: rotate(4deg);
+    }
+
+    .stats div {
+      border-bottom: 1px solid #111;
+
+      padding: 7px 0;
+    }
+
+
+    /* =========================
+       CAKE
+    ========================= */
+
+    .cake-page {
+      background: #ff72a8;
+    }
+
+    .cake-title {
+      font-family: "Bebas Neue";
+
+      font-size: clamp(70px, 13vw, 150px);
+
+      line-height: .8;
+
+      transform: rotate(-3deg);
+    }
+
+    .cake {
+      position: absolute;
+
+      left: 50%;
+      top: 58%;
+
+      transform: translate(-50%, -50%);
+
+      width: 320px;
+    }
+
+    .cake-body {
+      height: 120px;
+
+      background: #f6d547;
+
+      border: 5px solid #111;
+
+      border-radius: 12px;
+
+      position: relative;
+    }
+
+    .cake-body::after {
+      content: "";
+
+      position: absolute;
+
+      left: 0;
+      bottom: -5px;
+
+      width: 100%;
+      height: 25px;
+
+      background: #e9332d;
+
+      border-top: 5px solid #111;
+    }
+
+    .candles {
+      position: absolute;
+
+      top: -100px;
+
+      left: 15px;
+
+      width: 290px;
+
+      display: flex;
+
+      justify-content: space-around;
+
+      align-items: end;
+
+      flex-wrap: wrap;
+    }
+
+    .candle {
+      width: 8px;
+      height: 45px;
+
+      background: #36a9e1;
+
+      border: 2px solid #111;
+
+      position: relative;
+
+      margin: 4px;
+    }
+
+    .flame {
+      width: 13px;
+      height: 18px;
+
+      background: #f6d547;
+
+      border: 2px solid #111;
+
+      border-radius: 50% 50% 50% 0;
+
+      transform: rotate(-45deg);
+
+      position: absolute;
+
+      top: -20px;
+      left: -5px;
+
+      transition: opacity .2s;
+    }
+
+    .candle.out .flame {
+      opacity: 0;
+    }
+
+    .blow-instruction {
+      position: absolute;
+
+      bottom: 8vh;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      text-align: center;
+
+      font-family: "Permanent Marker";
+
+      font-size: 25px;
+    }
+
+    .mic-button {
+      margin-top: 15px;
+
+      padding: 10px 18px;
+
+      border: 2px solid #111;
+
+      background: #f4ead8;
+
+      cursor: pointer;
+
+      font-family: "DM Mono";
+
+      box-shadow: 4px 4px 0 #111;
+    }
+
+    .mic-status {
+      font-family: "DM Mono";
+
+      font-size: 11px;
+
+      margin-top: 10px;
+    }
+
+
+    /* =========================
+       PIÑATA
+    ========================= */
+
+    .pinata-page {
+      background: #36a9e1;
+    }
+
+    .pinata-title {
+      font-family: "Bebas Neue";
+
+      font-size: clamp(70px, 15vw, 190px);
+
+      line-height: .75;
+
+      transform: rotate(-3deg);
+    }
+
+    .pinata {
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      transform: translate(-50%, -50%);
+
+      cursor: pointer;
+
+      width: 220px;
+
+      transition: transform .15s;
+    }
+
+    .pinata:hover {
+      transform: translate(-50%, -50%) rotate(3deg) scale(1.03);
+    }
+
+    .pinata-body {
+      height: 250px;
+
+      background:
+        repeating-linear-gradient(
+          0deg,
+          #e9332d 0 30px,
+          #f6d547 30px 60px,
+          #ff72a8 60px 90px
+        );
+
+      border: 5px solid #111;
+
+      border-radius: 40%;
+
+      position: relative;
+    }
+
+    .pinata-face {
+      position: absolute;
+
+      top: 75px;
+      left: 45px;
+
+      font-size: 70px;
+    }
+
+    .hit-count {
+      position: absolute;
+
+      bottom: 10vh;
+
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      font-family: "DM Mono";
+
+      font-size: 14px;
+    }
+
+
+    /* =========================
+       MUSIC
+    ========================= */
+
+    .music-page {
+      background: #111;
+
+      color: #f4ead8;
+    }
+
+    .music-title {
+      font-family: "Bebas Neue";
+
+      font-size: clamp(80px, 18vw, 220px);
+
+      line-height: .75;
+
+      color: #f6d547;
+
+      transform: rotate(-3deg);
+    }
+
+    .music-box {
+      position: absolute;
+
+      left: 50%;
+      top: 55%;
+
+      transform: translate(-50%, -50%);
+
+      text-align: center;
+    }
+
+    .music-box button {
+      background: #e9332d;
+
+      color: #111;
+
+      border: 3px solid #f4ead8;
+
+      padding: 15px 25px;
+
+      font-family: "DM Mono";
+
+      cursor: pointer;
+    }
+
+    .music-note {
+      margin-top: 20px;
+
+      font-family: "Permanent Marker";
+
+      font-size: 20px;
+    }
+
+
+    /* =========================
+       HEART PAGE
+    ========================= */
+
+    .heart-page {
+      background: #f4ead8;
+    }
+
+    .heart-page h1 {
+      font-family: "Permanent Marker";
+
+      font-size: clamp(50px, 9vw, 110px);
+
+      transform: rotate(-4deg);
+    }
+
+    .heart-message {
+      max-width: 650px;
+
+      margin: 10vh auto 0;
+
+      font-size: clamp(18px, 2.5vw, 28px);
+
+      line-height: 1.6;
+    }
+
+    .heart-photo {
+      position: absolute;
+
+      width: 180px;
+      height: 220px;
+
+      object-fit: cover;
+
+      right: 10vw;
+      bottom: 10vh;
+
+      border: 5px solid #111;
+
+      transform: rotate(7deg);
+    }
+
+
+    /* =========================
+       FINAL
+    ========================= */
+
+    .final {
+      background: #e9332d;
+    }
+
+    .final h1 {
+      font-family: "Bebas Neue";
+
+      font-size: clamp(120px, 25vw, 350px);
+
+      line-height: .7;
+
+      transform: rotate(-4deg);
+    }
+
+    .final-name {
+      font-family: "Permanent Marker";
+
+      font-size: clamp(30px, 5vw, 60px);
+
+      margin-left: 10vw;
+
+      margin-top: 30px;
+
+      transform: rotate(3deg);
+    }
+
+    .final-message {
+      position: absolute;
+
+      right: 8vw;
+      bottom: 12vh;
+
+      max-width: 300px;
+
+      font-family: "DM Mono";
+
+      font-size: 14px;
+
+      transform: rotate(-5deg);
+    }
+
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .nav {
+      position: absolute;
+
+      bottom: 15px;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      display: flex;
+
+      gap: 10px;
+
+      z-index: 100;
+    }
+
+    .nav button {
+      border: 2px solid #111;
+
+      background: #f4ead8;
+
+      padding: 8px 12px;
+
+      cursor: pointer;
+
+      font-family: "DM Mono";
+
+      font-size: 12px;
+    }
+
+    .nav button:hover {
+      background: #f6d547;
+    }
+
+
+    /* =========================
+       CONFETTI
+    ========================= */
+
+    .confetti {
+      position: fixed;
+
+      width: 12px;
+      height: 18px;
+
+      pointer-events: none;
+
+      z-index: 9999;
+
+      animation: fall 2s forwards;
+    }
+
+    @keyframes fall {
+
+      0% {
+        transform:
+          translateY(-20px)
+          rotate(0);
+        opacity: 1;
+      }
+
+      100% {
+        transform:
+          translateY(100vh)
+          rotate(720deg);
+        opacity: 0;
+      }
+
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      .cover-title {
+        left: 5vw;
+        top: 10vh;
+      }
+
+      .cover-photo {
+        width: 60vw;
+        height: 45vh;
+
+        right: 5vw;
+        bottom: 18vh;
+      }
+
+      .cover-note {
+        bottom: 10vh;
+      }
+
+      .photo.one {
+        width: 55vw;
+        height: 38vh;
+
+        left: 7vw;
+        top: 28vh;
+      }
+
+      .photo.two {
+        width: 45vw;
+        height: 27vh;
+
+        right: 4vw;
+        top: 18vh;
+      }
+
+      .photo.three {
+        width: 48vw;
+        height: 27vh;
+
+        right: 7vw;
+        bottom: 12vh;
+      }
+
+      .scribble.a {
+        left: 8vw;
+        top: 70vh;
+      }
+
+      .stats {
+        position: relative;
+
+        right: auto;
+        bottom: auto;
+
+        margin-top: 40px;
+      }
+
+      .cake {
+        transform: translate(-50%, -50%) scale(.75);
+      }
+
+      .pinata {
+        transform: translate(-50%, -50%) scale(.8);
+      }
+
+      .pinata:hover {
+        transform: translate(-50%, -50%) scale(.83);
+      }
+
+      .heart-photo {
+        width: 130px;
+        height: 170px;
+
+        right: 5vw;
+        bottom: 8vh;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+<div class="zine">
+
+
+  <!-- =====================
+       PAGE 1
+  ====================== -->
+
+  <section class="page cover active">
+
+    <div class="issue">
+      SPECIAL BIRTHDAY EDITION<br>
+      NO. 022
+    </div>
+
+    <h1 class="cover-title">
+      <span>SKILO</span>
+      <span class="second">SKAI</span>
+    </h1>
+
+    <img
+      class="cover-photo"
+      src="images/sky-cover.jpg"
+      alt="Sky"
+    >
+
+    <div class="cover-note">
+      22 years of being<br>
+      that girl ✶
+    </div>
+
+    <button
+      class="start-button"
+      onclick="nextPage()"
+    >
+      OPEN ISSUE →
+    </button>
+
+    <div class="page-number">
+      01 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       PAGE 2
+  ====================== -->
+
+  <section class="page">
+
+    <h1 class="collage-title">
+      WHO EVEN<br>
+      IS SKILO?
+    </h1>
+
+    <img
+      class="photo one"
+      src="images/sky1.jpg"
+      alt=""
+    >
+
+    <img
+      class="photo two"
+      src="images/sky2.jpg"
+      alt=""
+    >
+
+    <img
+      class="photo three"
+      src="images/sky3.jpg"
+      alt=""
+    >
+
+    <div class="scribble a">
+      chill-ish.
+    </div>
+
+    <div class="scribble b">
+      fashion girl ↓
+    </div>
+
+    <div class="page-number">
+      02 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       PAGE 3
+  ====================== -->
+
+  <section class="page report">
+
+    <div class="breaking">
+      ★ BREAKING NEWS ★ &nbsp; LOCAL WOMAN TURNS 22
+    </div>
+
+    <h1>
+      THE<br>
+      SKILO<br>
+      REPORT
+    </h1>
+
+    <p class="report-text">
+      Sources confirm that Skilo Skai Kai is officially
+      entering her 22nd year of existence.
+      Authorities describe her as fashionable,
+      funny, encouraging and occasionally chill.
+    </p>
+
+    <div class="stats">
+
+      <div>AGE ................. 22</div>
+
+      <div>FASHION ............. 100%</div>
+
+      <div>FUNNY ............... 97%</div>
+
+      <div>ENCOURAGING ......... 100%</div>
+
+      <div>CHAOS ............... 100%</div>
+
+      <div>CHILL ............... TBD</div>
+
+    </div>
+
+    <div class="page-number">
+      03 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       PAGE 4
+  ====================== -->
+
+  <section class="page cake-page">
+
+    <h1 class="cake-title">
+      BIRTHDAY<br>
+      RITUAL
+    </h1>
+
+    <div class="cake">
+
+      <div class="candles" id="candles"></div>
+
+      <div class="cake-body"></div>
+
+    </div>
+
+    <div class="blow-instruction">
+
+      Make a wish, Sky. ✶
+
+      <br>
+
+      <button
+        class="mic-button"
+        onclick="startMic()"
+      >
+        🎤 BLOW OUT THE CANDLES
+      </button>
+
+      <div class="mic-status" id="micStatus">
+        or tap the button repeatedly if your mic is shy
+      </div>
+
+    </div>
+
+    <div class="page-number">
+      04 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       PAGE 5
+  ====================== -->
+
+  <section class="page pinata-page">
+
+    <h1 class="pinata-title">
+      HIT<br>
+      THE<br>
+      PIÑATA.
+    </h1>
+
+    <div
+      class="pinata"
+      id="pinata"
+      onclick="hitPinata()"
+    >
+
+      <div class="pinata-body">
+
+        <div class="pinata-face">
+          ◕‿◕
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="hit-count" id="hitCount">
+      TAP IT. 0 / 3
+    </div>
+
+    <div class="page-number">
+      05 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       PAGE 6
+  ====================== -->
+
+  <section class="page music-page">
+
+    <h1 class="music-title">
+      NOW<br>
+      WE<br>
+      PARTY.
+    </h1>
+
+    <div class="music-box">
+
+      <button onclick="playMusic()">
+        ▶ PLAY THE SOUNDTRACK
+      </button>
+
+      <div class="music-note">
+        because obviously every birthday<br>
+        needs a soundtrack.
+      </div>
+
+      <audio
+        id="music"
+        src="music/birthday-song.mp3"
+      ></audio>
+
+    </div>
+
+    <div class="page-number">
+      06 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       PAGE 7
+  ====================== -->
+
+  <section class="page">
+
+    <img
+      class="photo one"
+      src="images/sky4.jpg"
+      alt=""
+    >
+
+    <img
+      class="photo two"
+      src="images/sky5.jpg"
+      alt=""
+    >
+
+    <img
+      class="photo three"
+      src="images/sky6.jpg"
+      alt=""
+    >
+
+    <h1
+      class="collage-title"
+      style="
+        position:absolute;
+        bottom:8vh;
+        left:5vw;
+        font-size:clamp(55px,10vw,120px);
+      "
+    >
+      22 LOOKS<br>
+      GOOD ON YOU.
+    </h1>
+
+    <div class="page-number">
+      07 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       PAGE 8
+  ====================== -->
+
+  <section class="page heart-page">
+
+    <h1>
+      okay,<br>
+      seriously...
+    </h1>
+
+    <div class="heart-message">
+
+      <p>
+        For someone who is somehow both incredibly chill
+        and completely unserious, you have this way of
+        making the people around you feel encouraged,
+        loved and seen.
+      </p>
+
+      <br>
+
+      <p>
+        I'm really grateful I get to call you my sister.
+        Here's to 22, to everything that's coming,
+        and to all the ridiculous memories we're still
+        going to make.
+      </p>
+
+      <br>
+
+      <strong>
+        Happy birthday, Sky. ❤️
+      </strong>
+
+    </div>
+
+    <img
+      class="heart-photo"
+      src="images/sky7.jpg"
+      alt=""
+    >
+
+    <div class="page-number">
+      08 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       PAGE 9
+  ====================== -->
+
+  <section class="page final">
+
+    <h1>
+      22
+    </h1>
+
+    <div class="final-name">
+      SKILO SKAI KAI ✶
+    </div>
+
+    <div class="final-message">
+
+      <strong>
+        ISSUE 22: OFFICIALLY RELEASED.
+      </strong>
+
+      <br><br>
+
+      Limited edition.<br>
+      One of one.<br>
+      Extremely annoying.<br>
+      Would recommend.
+
+      <br><br>
+
+      Happy birthday, loser. ❤️
+
+    </div>
+
+    <div class="page-number">
+      09 / 09
+    </div>
+
+  </section>
+
+
+  <!-- =====================
+       NAVIGATION
+  ====================== -->
+
+  <div class="nav">
+
+    <button onclick="previousPage()">
+      ←
+    </button>
+
+    <button onclick="nextPage()">
+      →
+    </button>
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+  /* =========================
+     PAGE NAVIGATION
+  ========================= */
+
+  let currentPage = 0;
+
+  const pages = document.querySelectorAll(".page");
+
+  function showPage(index) {
+
+    if (index < 0) index = 0;
+
+    if (index >= pages.length) {
+      index = pages.length - 1;
+    }
+
+    pages.forEach(page => {
+      page.classList.remove("active");
+    });
+
+    pages[index].classList.add("active");
+
+    currentPage = index;
+  }
+
+  function nextPage() {
+
+    if (currentPage < pages.length - 1) {
+      showPage(currentPage + 1);
+    }
+
+  }
+
+  function previousPage() {
+
+    if (currentPage > 0) {
+      showPage(currentPage - 1);
+    }
+
+  }
+
+
+  /* =========================
+     KEYBOARD NAVIGATION
+  ========================= */
+
+  document.addEventListener("keydown", event => {
+
+    if (event.key === "ArrowRight") {
+      nextPage();
+    }
+
+    if (event.key === "ArrowLeft") {
+      previousPage();
+    }
+
+  });
+
+
+  /* =========================
+     CANDLES
+  ========================= */
+
+  const candleContainer =
+    document.getElementById("candles");
+
+  let candlesOut = 0;
+
+  for (let i = 0; i < 22; i++) {
+
+    const candle =
+      document.createElement("div");
+
+    candle.className = "candle";
+
+    const flame =
+      document.createElement("div");
+
+    flame.className = "flame";
+
+    candle.appendChild(flame);
+
+    candle.addEventListener(
+      "click",
+      blowOutOneCandle
+    );
+
+    candleContainer.appendChild(candle);
+
+  }
+
+
+  function blowOutOneCandle() {
+
+    if (this.classList.contains("out")) {
+      return;
+    }
+
+    this.classList.add("out");
+
+    candlesOut++;
+
+    if (candlesOut >= 22) {
+
+      document.getElementById("micStatus")
+        .innerText =
+        "✨ WISH DETECTED. HAPPY 22ND, SKILO. ✨";
+
+      confetti();
+
+    }
+
+  }
+
+
+  /* =========================
+     MICROPHONE
+  ========================= */
+
+  let audioContext;
+  let analyser;
+  let microphone;
+
+  async function startMic() {
+
+    const status =
+      document.getElementById("micStatus");
+
+    try {
+
+      const stream =
+        await navigator.mediaDevices
+          .getUserMedia({ audio: true });
+
+      audioContext =
+        new AudioContext();
+
+      analyser =
+        audioContext.createAnalyser();
+
+      microphone =
+        audioContext.createMediaStreamSource(stream);
+
+      microphone.connect(analyser);
+
+      analyser.fftSize = 256;
+
+      status.innerText =
+        "🎤 Blow into your microphone...";
+
+      detectBlow();
+
+    }
+
+    catch (error) {
+
+      status.innerText =
+        "Mic unavailable — tap the candles instead ✶";
+
+    }
+
+  }
+
+
+  function detectBlow() {
+
+    const data =
+      new Uint8Array(
+        analyser.frequencyBinCount
+      );
+
+    analyser.getByteFrequencyData(data);
+
+    let total = 0;
+
+    for (let i = 0; i < data.length; i++) {
+
+      total += data[i];
+
+    }
+
+    const average =
+      total / data.length;
+
+    if (average > 35) {
+
+      extinguishCandles();
+
+    }
+
+    requestAnimationFrame(detectBlow);
+
+  }
+
+
+  function extinguishCandles() {
+
+    const candles =
+      document.querySelectorAll(".candle");
+
+    candles.forEach((candle, index) => {
+
+      setTimeout(() => {
+
+        if (!candle.classList.contains("out")) {
+
+          candle.classList.add("out");
+
+          candlesOut++;
+
+        }
+
+      }, index * 50);
+
+    });
+
+    setTimeout(() => {
+
+      document.getElementById("micStatus")
+        .innerText =
+        "✨ WISH DETECTED. ✨";
+
+      confetti();
+
+    }, 1400);
+
+  }
+
+
+  /* =========================
+     PIÑATA
+  ========================= */
+
+  let hits = 0;
+
+  function hitPinata() {
+
+    if (hits >= 3) return;
+
+    hits++;
+
+    const pinata =
+      document.getElementById("pinata");
+
+    pinata.style.transform =
+      `translate(-50%, -50%) rotate(${hits % 2 ? -6 : 6}deg)`;
+
+    document.getElementById("hitCount")
+      .innerText =
+      `TAP IT. ${hits} / 3`;
+
+    setTimeout(() => {
+
+      pinata.style.transform =
+        "translate(-50%, -50%)";
+
+    }, 150);
+
+    if (hits === 3) {
+
+      explodePinata();
+
+    }
+
+  }
+
+
+  function explodePinata() {
+
+    const pinata =
+      document.getElementById("pinata");
+
+    pinata.style.transform =
+      "translate(-50%, -50%) scale(0) rotate(720deg)";
+
+    pinata.style.opacity = "0";
+
+    confetti();
+
+    setTimeout(() => {
+
+      document.getElementById("hitCount")
+        .innerText =
+        "💥 YOU BROKE IT. GOOD JOB.";
+
+      setTimeout(() => {
+
+        nextPage();
+
+      }, 1800);
+
+    }, 500);
+
+  }
+
+
+  /* =========================
+     CONFETTI
+  ========================= */
+
+  function confetti() {
+
+    const pieces = 80;
+
+    for (let i = 0; i < pieces; i++) {
+
+      const piece =
+        document.createElement("div");
+
+      piece.className = "confetti";
+
+      piece.style.left =
+        Math.random() * 100 + "vw";
+
+      piece.style.top =
+        "-30px";
+
+      piece.style.background =
+        [
+          "#e9332d",
+          "#f6d547",
+          "#36a9e1",
+          "#ff72a8",
+          "#111"
+        ][
+          Math.floor(Math.random() * 5)
+        ];
+
+      piece.style.transform =
+        `rotate(${Math.random() * 360}deg)`;
+
+      piece.style.animationDuration =
+        (1.5 + Math.random() * 2) + "s";
+
+      document.body.appendChild(piece);
+
+      setTimeout(() => {
+
+        piece.remove();
+
+      }, 4000);
+
+    }
+
+  }
+
+
+  /* =========================
+     MUSIC
+  ========================= */
+
+  function playMusic() {
+
+    const music =
+      document.getElementById("music");
+
+    music.play();
+
+  }
+
+
+</script>
+
+</body>
+</html>
